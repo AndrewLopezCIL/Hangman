@@ -9,7 +9,7 @@ namespace Hangman
     class Program
     {
         //
-        // Variables
+        // Variable
         //
         // parts
         static List<string> parts = new List<string>();
