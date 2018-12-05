@@ -27,6 +27,7 @@ namespace Hangman
         static bool gameRunning = true;
         // Initializing hangman
         static HangmanEntity hangman = new HangmanEntity();
+        static string wordsp;
 
         static void Main(string[] args)
         {
@@ -67,12 +68,15 @@ namespace Hangman
             addWords();
             // Randomly choose the word to guess from the words list
             getGuessingWord();
+            // getting the spaces for correction
+            wordsp = getWordSpaces(guessWord);
+
             Console.Clear();
             Console.WriteLine("Word chosen!");
             Console.WriteLine();
             Console.WriteLine("Begin guessing.");
             Console.WriteLine("");
-            Console.WriteLine(getWordSpaces(guessWord));
+            Console.WriteLine(wordsp);
 
             Console.WriteLine("");
             // Checks to see if the gameloop is still running - used everytime start_game is called
@@ -269,28 +273,33 @@ namespace Hangman
             int whichWord = rnd.Next(words.Count);
             guessWord = words[whichWord];
         }
+        //
+        // Checking each letter for the guessed letter, if it's the same then add it to the string
+        // If it's wrong, then add an underscore to the string
+        //
         static string guessedWordSpaces(char letterGuessed)
         {
             string guessed = "";
-
+            // Going through the word getting the index of each letter
             for (int letter = 0; letter < guessWord.Length; letter++)
             {
-                for (int i = 0; i < correctLetters.Count; i++)
-                {
-                    
-                if (guessWord[letter] == correctLetters[i])
-                    {
-                        guessed = guessed + " " + correctLetters[i] + " ";
-                    }
-                else if (guessWord[letter] != correctLetters[i])
-                    {
-                        guessed = guessed + " _ ";
-                    }
+                
+                if (guessWord[letter] != letterGuessed && !correctLetters.Contains(guessWord[letter]))
+                { 
+                    guessed = guessed + " _ ";
                 }
-            }
-
-            return guessed;
+                if (correctLetters.Contains(letterGuessed) && guessWord[letter] == letterGuessed)
+                    {
+                        guessed = guessed + " " + letterGuessed + " ";
+                    wordsp = guessed;
+                    }
+                 
+            } 
+            return wordsp;
         }
+        //
+        // Getting the underscore/spaces for each letter in the word
+        //
         static string getWordSpaces(string stringToSize)
         {
             string spaces = ""; 
