@@ -29,7 +29,11 @@ namespace Hangman
         static string wordsp;
         static string[] wordlist = new string[10];
         static char[] guessChar;
+        static string stickmanPhase = "0";
 
+        //
+        // Text Stick Man
+        //
 
         static void Main(string[] args)
         {
@@ -65,7 +69,7 @@ namespace Hangman
         // Starts the game
         //
         static void start_game()
-        {
+        { 
             addWords();
             // Randomly choose the word to guess from the words list
             getGuessingWord();
@@ -85,7 +89,7 @@ namespace Hangman
             Console.WriteLine("Correctly Guessed Letters: ");
             getCorrectLetters();
             Console.WriteLine();
-            Console.WriteLine("Guess Result: ");
+            Console.WriteLine("Guess Result: \t\t" + getStickManPhase(stickmanPhase));
             Console.WriteLine();
             // Checks to see if the gameloop is still running - used everytime start_game is called
             gameRunningCheck();
@@ -96,7 +100,8 @@ namespace Hangman
                     gameOver(); 
                     break;
                 }
-                // Have the user guess a letter
+                // Have the user guess a letter  
+
                 pickLetter();
             }
         }
@@ -109,6 +114,7 @@ namespace Hangman
             char letterguessed;
             Console.WriteLine("Guess a letter.");
             userResponse = Console.ReadLine();
+            //
             // Checking the guessed letters list for the user entry
             // If in the list, user guesses again, no appendages added.
             //
@@ -133,27 +139,38 @@ namespace Hangman
                 if (!parts.Contains("head"))
                 {
                     addPart("head");
+                    stickmanPhase = "1";
                 }
                 else if (!parts.Contains("torso"))
                 {
                     addPart("torso");
+                    stickmanPhase = "2";
                 }
                 else if (!parts.Contains("leftarm"))
                 {
                     addPart("leftarm");
+                    stickmanPhase = "3";
                 }
                 else if (!parts.Contains("rightarm"))
                 {
                     addPart("rightarm");
+                    stickmanPhase = "4";
                 }
                 else if (!parts.Contains("leftleg"))
                 {
                     addPart("leftleg");
+                    stickmanPhase = "5";
                 }
                 else if (!parts.Contains("rightleg"))
                 {
                     addPart("rightleg");
+                    stickmanPhase = "6";
                 }
+                //
+                // Add the wrongly guessed letter to the guessedWrongLetters and guessed letters list 
+                // Then send the letter to guessedWordSpaces method
+                // After, return the correctly guessed letters and guessed letters list
+                //
                 guessedWrongLetters.Add(userResponse);
                 guessedLetters.Add(userResponse);
                 if (char.TryParse(userResponse, out letterguessed)) {
@@ -169,13 +186,18 @@ namespace Hangman
                     Console.WriteLine();
                     Console.WriteLine("Correctly Guessed Letters: ");
                     getCorrectLetters();
-                    Console.WriteLine(); 
-                    Console.WriteLine("Guess Result: ");
+                    Console.WriteLine();
+                    Console.WriteLine("Guess Result: \t\t" + getStickManPhase(stickmanPhase));
                     Console.WriteLine();
                     Console.WriteLine("Wrong guess, appendage added to stickman.");
                     Console.WriteLine();
                 }
                 }
+            //
+            // if the word-to-guess contains the guessed letter, then run the correct guessed block of code
+            // Add the letter guessed to guessedLetters list, correctLetters list, and send it to the guessedWordSpaces method
+            // Then return the correct & guessed letters lists
+            //
             else if (guessWord.Contains(userResponse))
             {
                 guessedLetters.Add(userResponse);
@@ -193,8 +215,8 @@ namespace Hangman
                     Console.WriteLine();
                     Console.WriteLine("Correctly Guessed Letters: ");
                     getCorrectLetters();
-                    Console.WriteLine(); 
-                    Console.WriteLine("Guess Result: ");
+                    Console.WriteLine();
+                    Console.WriteLine("Guess Result: \t\t" + getStickManPhase(stickmanPhase));
                     Console.WriteLine();
                     Console.WriteLine("Correct Guess!");
                     Console.WriteLine();
@@ -204,11 +226,7 @@ namespace Hangman
                 //
                 if (winCheck()) {
                     winMessage();
-                }
-                
-                    // Get the positions where the userResponse is at in the guessing word
-                // Add it to the underscore position in console 
-                
+                } 
             }
 
         }
@@ -235,6 +253,36 @@ namespace Hangman
         // This method will add a part to the hangman 
         // Parts consist of Head, Torso, Left arm, Right Arm, Left Leg, Right Leg
         //
+        static string getStickManPhase(string phase)
+        { 
+            switch (phase)
+            {
+                case "0":
+                    phase = hangman.smPhase0;
+                    break;
+                case "1":
+                    phase = hangman.smPhase1;
+                    break;
+                case "2":
+                    phase = hangman.smPhase2;
+                    break;
+                case "3":
+                    phase = hangman.smPhase3;
+                    break;
+                case "4":
+                    phase = hangman.smPhase4;
+                    break; 
+                case "5":
+                    phase = hangman.smPhase5;
+                    break;
+                case "6":
+                    phase = hangman.smPhase6;
+                    break;
+                default:
+                    break;
+            } 
+            return phase;
+        }
         static void addPart(string part)
         {
             part = part.ToLower();
@@ -286,31 +334,7 @@ namespace Hangman
 
             return hangmanAllParts;
         }
-        static void playAgainPrompt()
-        {
-            string userResponse;
-            Console.Clear();
-            Console.WriteLine("Would you like to play again?");
-            userResponse = Console.ReadLine();
-            bool checking = true;
-            while (checking)
-            {
-                switch (userResponse.ToLower())
-                {
-                    case "yes":
-                    case "y":
-                        resetGame();
-                        checking = false;
-                        break;
-                    case "no":
-                    case "n":
-                        checking = false;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
+         
         //
         // Pick a random word from the guessing list
         //

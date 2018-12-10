@@ -14,7 +14,90 @@ namespace Hangman
         private bool right_arm = false;
         private bool left_leg = false;
         private bool right_leg = false;
-          
+
+        //
+        // Text Stick Man
+        //
+        public string smPhase0 = @"
+                     ____
+                    |    |   
+                    |      
+                    |     
+                    |      
+                    |___
+                    |   |______
+                    |          |
+                    |__________|                
+                ";
+        public string smPhase1 = @"
+                     ____
+                    |    |   
+                    |    o  
+                    |     
+                    |      
+                    |___
+                    |   |______
+                    |          |
+                    |__________|
+                ";
+        public string smPhase2 = @"
+                     ____
+                    |    |   
+                    |    o  
+                    |    |   
+                    |   
+                    |___
+                    |   |______
+                    |          |
+                    |__________|
+                ";
+        public string smPhase3 = @"
+                     ____
+                    |    |   
+                    |    o  
+                    |   /|   
+                    |  
+                    |___
+                    |   |______
+                    |          |
+                    |__________|
+
+                ";
+      public string smPhase4 = @"
+                     ____
+                    |    |   
+                    |    o  
+                    |   /|\  
+                    |    
+                    |___
+                    |   |______
+                    |          |
+                    |__________|
+                ";
+       public string smPhase5 = @"
+                     ____
+                    |    |   
+                    |    o  
+                    |   /|\   
+                    |   /  
+                    |___
+                    |   |______
+                    |          |
+                    |__________|        
+
+                ";
+       public string smPhase6 = @"
+                     ____
+                    |    |   
+                    |    o  
+                    |   /|\   
+                    |   / \
+                    |___
+                    |   |______
+                    |          |
+                    |__________|
+                ";
+
         public bool bpHead
         {
             get { return head; }
