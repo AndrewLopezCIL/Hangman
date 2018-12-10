@@ -12,7 +12,7 @@ namespace Hangman
         // Variables
         //
        
-        // parts
+        // body parts already added to the stickman
         static List<string> parts = new List<string>();
         // guessed letters (wrong and correct) will go in this list
         static List<string> guessedLetters = new List<string>();
@@ -22,13 +22,16 @@ namespace Hangman
         static List<string> guessedWrongLetters = new List<string>(); 
         // current word getting guessed
         static string guessWord;
-        // game loop
+        // game loop boolean
         static bool gameRunning = true;
         // Initializing hangman
         static HangmanEntity hangman = new HangmanEntity();
+        // word but in spaces/with the _ 
         static string wordsp;
-        static string[] wordlist = new string[10];
+        // guessing words list
+        static string[] wordlist = new string[10]; 
         static char[] guessChar;
+        // hangman's current stickman phase (the phase in which how many body parts are added in text form)
         static string stickmanPhase = "0";
 
         //
@@ -283,6 +286,9 @@ namespace Hangman
             } 
             return phase;
         }
+        //
+        // Add a body part to the hangman
+        //
         static void addPart(string part)
         {
             part = part.ToLower();
@@ -478,28 +484,34 @@ namespace Hangman
             }
 
 
-        }
-        static void lostMessage()
-        {
-
-        }
+        } 
         static void resetGame()
         {
+            //
             //Clear out all of the guessed letters wrong, correct and guessed
+            //
             correctLetters.Clear();
             guessedLetters.Clear();
-            guessedWrongLetters.Clear();
+            guessedWrongLetters.Clear(); 
             parts.Clear();
             guessWord = "";
-
-            //Resetting the getters/setters
+            //
+            // Resetting the getters/setters
+            //
             hangman.bpHead = false;
             hangman.bpLeft_Arm = false;
             hangman.bpLeft_Leg = false;
             hangman.bpRight_Arm = false;
             hangman.bpRight_Leg = false;
+            stickmanPhase = "0"; 
+            //
+            // Starts the game again
+            //
             start_game();
         }
+        //
+        // Guessed too many times/Game over prompt message
+        //
         static void gameOver()
         {
             string userResponse;
@@ -534,6 +546,9 @@ namespace Hangman
                 }
             }
         }
+        //
+        // Exiting game prompt/message
+        //
         static void endPrompt()
         {
             Console.Clear();
