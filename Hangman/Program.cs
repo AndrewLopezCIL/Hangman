@@ -11,16 +11,17 @@ namespace Hangman
         //
         // Variables
         //
+       
         // parts
         static List<string> parts = new List<string>();
         // guessed letters (wrong and correct) will go in this list
         static List<string> guessedLetters = new List<string>();
         // guessed letters that are correct go in this list
         static List<char> correctLetters = new List<char>();
+        // matched correct letters with word
+        static List<char> matchedLetters = new List<char>();
         // wrongly guessed letters will go in this list
-        static List<string> guessedWrongLetters = new List<string>();
-        // guessable words go in this list
-        static List<string> words = new List<string>();
+        static List<string> guessedWrongLetters = new List<string>(); 
         // current word getting guessed
         static string guessWord;
         // game loop
@@ -28,6 +29,9 @@ namespace Hangman
         // Initializing hangman
         static HangmanEntity hangman = new HangmanEntity();
         static string wordsp;
+        static string[] wordlist = new string[10];
+       static char[] guessChar;
+
 
         static void Main(string[] args)
         {
@@ -48,17 +52,16 @@ namespace Hangman
         }
         static void addWords()
         {
-            words.Add("banana");
-            words.Add("apple");
-            words.Add("car");
-            words.Add("truck");
-            words.Add("plane");
-            words.Add("tree");
-            words.Add("computer");
-            words.Add("code");
-            words.Add("cpu");
-            words.Add("ram");
-            words.Add("keyboard");
+            wordlist[0] = "banana";
+            wordlist[1] = "apple";
+            wordlist[2] = "car";
+            wordlist[3] = "truck";
+            wordlist[4] = "plane";
+            wordlist[5] = "tree";
+            wordlist[6] = "computer";
+            wordlist[7] = "code";
+            wordlist[8] = "cpu";
+            wordlist[9] = "ram";  
         }
         //
         // Starts the game
@@ -85,8 +88,7 @@ namespace Hangman
             {
                 // if hangman = true/gameover = true then break out of game loop and end.
                 if (hangmanCheck()) {
-                    gameOver();
-                    playAgainPrompt();
+                    gameOver(); 
                     break;
                 }
                 // Have the user guess a letter
@@ -152,8 +154,15 @@ namespace Hangman
                 guessedLetters.Add(userResponse);
                 if (char.TryParse(userResponse, out letterguessed)) {
                     correctLetters.Add(letterguessed);
-                    Console.WriteLine(guessedWordSpaces(letterguessed)); 
+                    guessedWordSpaces(letterguessed); 
                 }
+                //
+                // Checking if the user has won
+                //
+                if (winCheck()) {
+                    winMessage();
+                }
+                
                     // Get the positions where the userResponse is at in the guessing word
                 // Add it to the underscore position in console 
                 Console.WriteLine("Correct Guess! Guess another one!");
@@ -270,32 +279,35 @@ namespace Hangman
         static void getGuessingWord()
         {
             Random rnd = new Random();
-            int whichWord = rnd.Next(words.Count);
-            guessWord = words[whichWord];
+            int whichWord = rnd.Next(wordlist.Length); 
+            guessWord = wordlist[whichWord];
+            guessChar = new char[guessWord.Length];
+            for (int p = 0; p < guessWord.Length; p++)
+            {
+                guessChar[p] = '_';
+            }
         }
         //
         // Checking each letter for the guessed letter, if it's the same then add it to the string
         // If it's wrong, then add an underscore to the string
         //
         static string guessedWordSpaces(char letterGuessed)
-        {
-            string guessed = "";
-            // Going through the word getting the index of each letter
-            for (int letter = 0; letter < guessWord.Length; letter++)
-            {
-                
-                if (guessWord[letter] != letterGuessed && !correctLetters.Contains(guessWord[letter]))
-                { 
-                    guessed = guessed + " _ ";
-                }
-                if (correctLetters.Contains(letterGuessed) && guessWord[letter] == letterGuessed)
-                    {
-                        guessed = guessed + " " + letterGuessed + " ";
-                    wordsp = guessed;
+        { 
+            while (true)
+            { 
+                for (int j = 0; j < guessWord.Length; j++)
+                {
+                    if (letterGuessed == guessWord[j]) {  
+                        guessChar[j] = letterGuessed;
                     }
-                 
+                }
+                Console.WriteLine(guessChar);
+
+                break;
             } 
-            return wordsp;
+            string returnString = guessChar.ToString();
+
+            return returnString;
         }
         //
         // Getting the underscore/spaces for each letter in the word
@@ -333,6 +345,59 @@ namespace Hangman
         //
         // This method will reset the game
         //
+        static bool winCheck()
+        {
+            bool gameWon = false;
+            foreach (char letter in guessWord)
+            {
+
+                if (correctLetters.Contains(letter))
+                {
+                    gameWon = true;
+                }
+                else
+                {
+                    gameWon = false;
+                    break;
+                }
+            } 
+            return gameWon;
+        }
+        static void winMessage()
+        {
+            string userResponse;
+            Console.Clear();
+            Console.WriteLine();
+            Console.WriteLine("Congratulations, you've guessed every letter correctly! The word was: " + guessWord + "!");
+            Console.WriteLine();
+            Console.WriteLine("Would you like to play again? Enter <Yes> or <No>");
+            while (true)
+            {
+                userResponse = Console.ReadLine();
+                if (userResponse.ToLower() == "yes" || userResponse.ToLower() == "y")
+                {
+                    resetGame();
+                    break;
+                }
+                else if (userResponse.ToLower() == "no" || userResponse.ToLower() == "n")
+                {
+                    gameRunning = false;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Please enter yes or no");
+                    Console.WriteLine();
+                }
+            }
+
+
+        }
+        static void lostMessage()
+        {
+
+        }
         static void resetGame()
         {
             //Clear out all of the guessed letters wrong, correct and guessed
@@ -352,6 +417,7 @@ namespace Hangman
         }
         static void gameOver()
         {
+            string userResponse;
             Console.Clear();
             Console.WriteLine("Game over!");
             Console.WriteLine();
@@ -359,10 +425,34 @@ namespace Hangman
             Console.WriteLine();
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
+            Console.Clear();
+            Console.WriteLine();
+            Console.WriteLine("Would you like to play again? Enter <Yes> or <No>");
+            while (true)
+            {
+                userResponse = Console.ReadLine();
+                if (userResponse.ToLower() == "yes" || userResponse.ToLower() == "y")
+                {
+                    resetGame();
+                    break;
+                }
+                else if (userResponse.ToLower() == "no" || userResponse.ToLower() == "n")
+                {
+                    gameRunning = false;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Please enter yes or no");
+                    Console.WriteLine();
+                }
+            }
         }
         static void endPrompt()
         {
             Console.Clear();
+            Console.WriteLine();
             Console.WriteLine("Thank you for playing my app, Hangman.");
             Console.WriteLine();
             Console.WriteLine("Press any key to continue...");
