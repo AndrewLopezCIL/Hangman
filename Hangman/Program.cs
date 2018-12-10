@@ -17,9 +17,7 @@ namespace Hangman
         // guessed letters (wrong and correct) will go in this list
         static List<string> guessedLetters = new List<string>();
         // guessed letters that are correct go in this list
-        static List<char> correctLetters = new List<char>();
-        // matched correct letters with word
-        static List<char> matchedLetters = new List<char>();
+        static List<char> correctLetters = new List<char>(); 
         // wrongly guessed letters will go in this list
         static List<string> guessedWrongLetters = new List<string>(); 
         // current word getting guessed
@@ -30,7 +28,7 @@ namespace Hangman
         static HangmanEntity hangman = new HangmanEntity();
         static string wordsp;
         static string[] wordlist = new string[10];
-       static char[] guessChar;
+        static char[] guessChar;
 
 
         static void Main(string[] args)
@@ -73,15 +71,22 @@ namespace Hangman
             getGuessingWord();
             // getting the spaces for correction
             wordsp = getWordSpaces(guessWord);
-
+             
             Console.Clear();
-            Console.WriteLine("Word chosen!");
             Console.WriteLine();
-            Console.WriteLine("Begin guessing.");
-            Console.WriteLine("");
+            Console.WriteLine("Word chosen, begin guessing!");
+            Console.WriteLine();
             Console.WriteLine(wordsp);
-
-            Console.WriteLine("");
+            Console.WriteLine();
+            Console.WriteLine("Guessed Letters: ");
+            Console.WriteLine();
+            getGuessedLetters();
+            Console.WriteLine();
+            Console.WriteLine("Correctly Guessed Letters: ");
+            getCorrectLetters();
+            Console.WriteLine();
+            Console.WriteLine("Guess Result: ");
+            Console.WriteLine();
             // Checks to see if the gameloop is still running - used everytime start_game is called
             gameRunningCheck();
             while (gameRunning)
@@ -109,6 +114,7 @@ namespace Hangman
             //
             if (guessedLetters.Contains(userResponse))
             {
+                Console.WriteLine();
                 Console.WriteLine($"You already guessed {userResponse}, guess again.");
             }
             //
@@ -116,6 +122,7 @@ namespace Hangman
             //
             else if (userResponse.Length > 1 || userResponse.Length < 1)
             {
+                Console.WriteLine();
                 Console.WriteLine("You can only guess one letter, guess again.");
             }
             //
@@ -148,13 +155,49 @@ namespace Hangman
                     addPart("rightleg");
                 }
                 guessedWrongLetters.Add(userResponse);
-            }
+                guessedLetters.Add(userResponse);
+                if (char.TryParse(userResponse, out letterguessed)) {
+                    Console.Clear();
+                    Console.WriteLine();
+                    Console.WriteLine("Word:");
+                    Console.WriteLine();
+                    guessedWordSpaces(letterguessed);
+                    Console.WriteLine();
+                    Console.WriteLine("Guessed Letters: ");
+                    Console.WriteLine();
+                    getGuessedLetters();
+                    Console.WriteLine();
+                    Console.WriteLine("Correctly Guessed Letters: ");
+                    getCorrectLetters();
+                    Console.WriteLine(); 
+                    Console.WriteLine("Guess Result: ");
+                    Console.WriteLine();
+                    Console.WriteLine("Wrong guess, appendage added to stickman.");
+                    Console.WriteLine();
+                }
+                }
             else if (guessWord.Contains(userResponse))
             {
                 guessedLetters.Add(userResponse);
                 if (char.TryParse(userResponse, out letterguessed)) {
                     correctLetters.Add(letterguessed);
-                    guessedWordSpaces(letterguessed); 
+                    Console.Clear();
+                    Console.WriteLine();
+                    Console.WriteLine("Word:");
+                    Console.WriteLine();
+                    guessedWordSpaces(letterguessed);
+                    Console.WriteLine();
+                    Console.WriteLine("Guessed Letters: ");
+                    Console.WriteLine();
+                    getGuessedLetters();
+                    Console.WriteLine();
+                    Console.WriteLine("Correctly Guessed Letters: ");
+                    getCorrectLetters();
+                    Console.WriteLine(); 
+                    Console.WriteLine("Guess Result: ");
+                    Console.WriteLine();
+                    Console.WriteLine("Correct Guess!");
+                    Console.WriteLine();
                 }
                 //
                 // Checking if the user has won
@@ -165,7 +208,7 @@ namespace Hangman
                 
                     // Get the positions where the userResponse is at in the guessing word
                 // Add it to the underscore position in console 
-                Console.WriteLine("Correct Guess! Guess another one!");
+                
             }
 
         }
@@ -200,32 +243,27 @@ namespace Hangman
                 case "head":
                     hangman.bpHead = true;
                     parts.Add("head");
-                    Console.WriteLine("Wrong guess, appendage added to stickman.");
+                   
                     break;
                 case "torso":
                     hangman.bpTorso = true;
-                    parts.Add("torso");
-                    Console.WriteLine("Wrong guess, appendage added to stickman.");
+                    parts.Add("torso"); 
                     break;
                 case "leftarm":
                     hangman.bpLeft_Arm = true;
-                    parts.Add("leftarm");
-                    Console.WriteLine("Wrong guess, appendage added to stickman.");
+                    parts.Add("leftarm"); 
                     break;
                 case "rightarm":
                     hangman.bpRight_Arm = true;
-                    parts.Add("rightarm");
-                    Console.WriteLine("Wrong guess, appendage added to stickman.");
+                    parts.Add("rightarm"); 
                     break;
                 case "leftleg":
                     hangman.bpLeft_Leg = true;
-                    parts.Add("leftleg");
-                    Console.WriteLine("Wrong guess, appendage added to stickman.");
+                    parts.Add("leftleg"); 
                     break;
                 case "rightleg":
                     hangman.bpRight_Leg = true;
-                    parts.Add("rightleg");
-                    Console.WriteLine("Wrong guess, appendage added to stickman.");
+                    parts.Add("rightleg"); 
                     break;
                 default:
                     break;
@@ -301,10 +339,18 @@ namespace Hangman
                         guessChar[j] = letterGuessed;
                     }
                 }
-                Console.WriteLine(guessChar);
-
+                 
                 break;
-            } 
+            }
+            foreach (char item in guessChar)
+            {
+                string uppercaseItem;
+                uppercaseItem = item.ToString().ToUpper();
+                Console.Write(" ");
+                Console.Write(uppercaseItem);
+                Console.Write(" "); 
+            }
+            Console.WriteLine();
             string returnString = guessChar.ToString();
 
             return returnString;
@@ -325,15 +371,30 @@ namespace Hangman
         // Displays the guessed letters to the user
         //
         static void getGuessedLetters()
-        {
-
+        { 
+            foreach (string guessedLetters in guessedWrongLetters)
+            {
+                Console.Write(" ");
+                Console.Write(guessedLetters.ToUpper());
+                Console.Write(" ");
+            }
+            Console.WriteLine();
         }
         //
         // Displays the correct guessed letters to the user
         //
         static void getCorrectLetters()
         {
-
+            Console.WriteLine();
+            foreach (char letter in correctLetters)
+            {
+                string uppercaseItem;
+                uppercaseItem = letter.ToString().ToUpper();
+                Console.Write(" ");
+                Console.Write(uppercaseItem);
+                Console.Write(" "); 
+            }
+            Console.WriteLine();
         }
         //
         // This method will return the parts of the hangman left (from the parts array)
@@ -368,7 +429,7 @@ namespace Hangman
             string userResponse;
             Console.Clear();
             Console.WriteLine();
-            Console.WriteLine("Congratulations, you've guessed every letter correctly! The word was: " + guessWord + "!");
+            Console.WriteLine("Congratulations, you've guessed every letter! The word was: " + guessWord.ToUpper() + "!");
             Console.WriteLine();
             Console.WriteLine("Would you like to play again? Enter <Yes> or <No>");
             while (true)
